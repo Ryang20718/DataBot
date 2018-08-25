@@ -36,9 +36,9 @@ try:
     session.set_comments(['aMEIzing!', 'So much fun!!', 'Nicey!'])
     session.set_dont_include(['friend1', 'friend2', 'friend3'])
     session.set_dont_like(['pizza', 'girl'])
-
     # actions
     session.like_by_tags(['natgeo'], amount=1)
+    session.like_by_tags(['boosted'], amount=10)
 
 except Exception as exc:
     # if changes to IG layout, upload the file to help us locate the change
