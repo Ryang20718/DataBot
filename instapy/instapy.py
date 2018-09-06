@@ -608,7 +608,7 @@ class InstaPy:
                         self.logger.info('Total Follow: {}'.format(str(followed_all)))
                         # Take a break after a good following
                         if followed_new >= relax_point:
-                            delay_random = random.randint(ceil(sleep_delay*0.85), ceil(sleep_delay*1.14))
+                            delay_random = random.randint(ceil(sleep_delay*0.32), ceil(sleep_delay*0.85))
                             self.logger.info('------=>  Followed {} new users ~sleeping about {}'.format(followed_new,
                                                                         '{} seconds'.format(delay_random) if delay_random < 60 else
                                                                         '{} minutes'.format(float("{0:.2f}".format(delay_random/60)))))

@@ -1,5 +1,6 @@
 import time
 import re
+import csv
 import random
 
 """Module that handles the like features"""
@@ -122,7 +123,7 @@ def get_links_for_location(browser,
         while filtered_links in range(1, amount):
             if sc_rolled > 100:
                 logger.info("Scrolled too much! ~ sleeping a bit :>")
-                sleep(600)
+                sleep(60)
                 sc_rolled = 0
             for i in range(3):
                 browser.execute_script(
@@ -149,7 +150,7 @@ def get_links_for_location(browser,
                 if try_again > 2:  # you can try again as much as you want by changing this number
                     if put_sleep < 1 and filtered_links <= 21:
                         logger.info("Cor! Did you send too many requests? ~ let's rest some")
-                        sleep(600)
+                        sleep(60)
                         put_sleep += 1
                         browser.execute_script("location.reload()")
                         try_again = 0
@@ -250,7 +251,7 @@ def get_links_for_tag(browser,
         while filtered_links in range(1, amount):
             if sc_rolled > 100:
                 logger.info("Scrolled too much! ~ sleeping a bit :>")
-                sleep(600)
+                sleep(60)
                 sc_rolled = 0
             for i in range(3):
                 browser.execute_script(
@@ -276,7 +277,7 @@ def get_links_for_tag(browser,
                 if try_again > 2:   #you can try again as much as you want by changing this number
                     if put_sleep < 1 and filtered_links <= 21 :
                         logger.info("Cor! Did you send too many requests? ~ let's rest some")
-                        sleep(600)
+                        sleep(60)
                         put_sleep += 1
                         browser.execute_script("location.reload()")
                         try_again = 0
@@ -516,7 +517,28 @@ def check_link(browser, post_link, dont_like, mandatory_words, ignore_if_contain
 
 def like_image(browser, username, blacklist, logger, logfolder):
     """Likes the browser opened image"""
+    """Goes Through and gets the comments"""
+    
+    names = browser.find_elements_by_xpath('//div[@class="C4VMK"]/span')
+    owner = browser.find_elements_by_xpath('//div[@class="C4VMK"]/a[@class="FPmhX notranslate TlrDj"]')
 
+    def remove_non_ascii_1(text):
+
+        return ''.join([i if ord(i) < 128 else '' for i in text])
+
+    # writes to CSV
+    for i in range(len(names)):
+        comment = remove_non_ascii_1(names[i].text)
+        subArray = []
+        if comment != "" and owner[i].text != 'vesselbags':
+            subArray.append(comment)
+            print comment
+            with open('instaComments.csv', 'a') as csvFile:
+                writer = csv.writer(csvFile)
+                writer.writerow(subArray)
+            csvFile.close()
+    
+    
     like_xpath = "//button/span[@aria-label='Like']"
     unlike_xpath = "//button/span[@aria-label='Unlike']"
 
@@ -542,7 +564,7 @@ def like_image(browser, username, blacklist, logger, logfolder):
         else:
             # if like not seceded wait for 2 min
             logger.info('--> Image was not able to get Liked! maybe blocked ?')
-            sleep(120)
+            sleep(1)
     else:
         liked_elem = browser.find_elements_by_xpath(unlike_xpath)
         if len(liked_elem) == 1:
